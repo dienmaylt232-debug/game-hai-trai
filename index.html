@@ -41,10 +41,9 @@
 </head>
 <body>
 
-    <!-- THẺ CHÈN NHẠC NỀN -->
-    <!-- Hãy đổi chữ nhacnen.mp3 thành tên file nhạc của bạn -->
+    <!-- ĐÃ CÀI SẴN TÊN FILE NHẠC LÀ nhac.mp3 -->
     <audio id="bgMusic" loop>
-        <source src="nhacnen.mp3" type="audio/mpeg">
+        <source src="nhac.mp3" type="audio/mpeg">
     </audio>
 
     <div id="info">
@@ -57,7 +56,7 @@
 
         <div id="start-screen" class="msg-box">
             <h1>HÁI TRÁI CÂY 🍎🥝🍊</h1>
-            <p>Dùng <b>Phím Mũi Tên Trái / Phải</b> hoặc <b>Kéo ngón tay/chuột</b> để di chuyển giỏ hứng trái cây rơi xuống nhé!</p>
+            <p>Dùng <b>Phím Mũi Tên Trái / Phải</b> hoặc <b>Kéo chuột/ngón tay</b> để di chuyển giỏ hứng trái cây nhé!</p>
             <button onclick="startGame()">BẮT ĐẦU HÁI</button>
         </div>
 
@@ -85,12 +84,10 @@
         let gameSpeed = 3;
         let timer = 0;
 
-        // Giỏ hứng trái cây ở đáy
         const basket = { x: 150, y: 500, w: 80, h: 40, speed: 8 };
         let leftPressed = false;
         let rightPressed = false;
 
-        // Danh sách trái cây (Táo, Kiwi, Cam)
         let fruits = [];
         const fruitTypes = [
             { name: 'Táo', color: '#ef4444', emoji: '🍎', points: 10 },
@@ -104,7 +101,6 @@
             fruits.push({ x: x, y: -30, radius: 20, speed: gameSpeed + Math.random() * 2, type: type });
         }
 
-        // Điều khiển bàn phím
         window.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft' || e.key === 'a') leftPressed = true;
             if (e.key === 'ArrowRight' || e.key === 'd') rightPressed = true;
@@ -114,7 +110,6 @@
             if (e.key === 'ArrowRight' || e.key === 'd') rightPressed = false;
         });
 
-        // Điều khiển bằng chuột / cảm ứng
         canvas.addEventListener('mousemove', (e) => {
             if (!isPlaying) return;
             const rect = canvas.getBoundingClientRect();
@@ -137,23 +132,19 @@
         function update() {
             if (!isPlaying) return;
 
-            // Di chuyển giỏ
             if (leftPressed && basket.x > 0) basket.x -= basket.speed;
             if (rightPressed && basket.x < canvas.width - basket.w) basket.x += basket.speed;
             
-            // Giới hạn trong khung
             if (basket.x < 0) basket.x = 0;
             if (basket.x > canvas.width - basket.w) basket.x = canvas.width - basket.w;
 
             timer++;
             if (timer % 40 === 0) createFruit();
 
-            // Cập nhật vị trí trái cây
             for (let i = fruits.length - 1; i >= 0; i--) {
-                let f = fruits.get ? fruits[i] : fruits[i];
+                let f = fruits[i];
                 f.y += f.speed;
 
-                // Kiểm tra giỏ hứng trúng trái cây
                 if (
                     f.y + f.radius >= basket.y &&
                     f.x >= basket.x &&
@@ -166,7 +157,6 @@
                     continue;
                 }
 
-                // Rơi xuống đất mất mạng
                 if (f.y > canvas.height) {
                     fruits.splice(i, 1);
                     lives--;
@@ -179,29 +169,27 @@
         }
 
         function draw() {
-            // Xóa màn hình
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Vẽ cây ăn quả tượng trưng ở nền trên
+            // Nền cây xanh phía trên
             ctx.fillStyle = '#047857';
             ctx.beginPath();
             ctx.arc(80, 0, 90, 0, Math.PI);
             ctx.arc(300, 0, 100, 0, Math.PI);
             ctx.fill();
 
-            // Vẽ Giỏ hứng
+            // Giỏ hứng
             ctx.fillStyle = '#d97706';
             ctx.fillRect(basket.x, basket.y, basket.w, basket.h);
             ctx.strokeStyle = '#78350f';
             ctx.lineWidth = 3;
             ctx.strokeRect(basket.x, basket.y, basket.w, basket.h);
             
-            // Tay cầm giỏ
             ctx.beginPath();
             ctx.arc(basket.x + basket.w/2, basket.y, 25, Math.PI, 0);
             ctx.stroke();
 
-            // Vẽ các trái cây đang rơi
+            // Trái cây rơi
             for (let f of fruits) {
                 ctx.beginPath();
                 ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
@@ -211,7 +199,6 @@
                 ctx.strokeStyle = '#fff';
                 ctx.stroke();
 
-                // Vẽ Emoji trái cây bên trong
                 ctx.font = '20px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
